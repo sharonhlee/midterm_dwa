@@ -1,0 +1,74 @@
+<form id="nytSearch" action="/games" method="get">
+
+    <label for="year">Year(1831 to current year): </label><br>
+    <input id="year" type="number" name="year" min="1831" max="2016" value=2016 /><br>
+
+    <label for="searchterm">Search: </label><br>
+    <div id="searchterms">
+    <input type="text" name="searchterm1" placeholder="Enter Search term"/><br>
+    <input type="text" name="searchterm2" placeholder="Enter Search term"/><br>
+    <input type="text" name="searchterm3" placeholder="Enter Search term"/><br>
+    <input type="text" name="searchterm4" placeholder="Enter Search term"/><br>
+    <input type="text" name="searchterm5" placeholder="Enter Search term"/>
+    </div>
+
+    <br>
+    <input id="apikey" type="hidden" name="32bc1bcdf69f07f2adcd6129af469c3b%3A13%3A71691949" />
+
+    <input type="hidden" name="mode" value="html">
+    <br>
+    <input type="submit" />
+
+</form>
+
+
+
+<script type="text/javascript">
+
+    $('#searchterms').focus();
+
+    $('form').on('submit', handleSubmit);
+
+    function handleSubmit(event) {
+        //prevent form submission
+        event.preventDefault();
+        var formData = {
+            'q': $('#searchterms input').serializeArray(),
+            'begin_date': $('#year').val() + "0101",
+            'end_date': $('#year').val() + "1231",
+            'api_key': $('#apikey').val()
+        };
+        console.log(formData);
+        console.log(formData.q.length);
+
+        searchData=[]
+        for(i=0;i<formData.q.length;i++){
+            var eachSearchData={
+                'q':formData.q[i].value,
+                'begin_date': formData.begin_date,
+                'end_date': formData.end_date,
+                'api-key': formData.api_key
+            };
+            searchData.push(eachSearchData);
+        };
+        //console.log(searchData);
+
+        for (i=0;i<searchData.length;i++){
+            console.log(searchData[i]);
+            $.ajax({
+                url: 'http://api.nytimes.com/svc/search/v2/articlesearch.json',
+                method: 'GET',
+                data: searchData[i]
+            }).done(function(data) {
+
+                var num;
+
+                num = data.response.meta.hits; //number of articles
+                console.log(num);
+            });
+
+        };
+
+    };
+</script>
+

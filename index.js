@@ -1,20 +1,27 @@
 
 var express = require('express');//equivalent of a script tag, but in javascript
-var hbs = require('express-handlbars');
+var hbs = require('express-handlebars');
+var bodyParser = require('body-parser');
+var Mongoose = require('mongoose');
+
 var app = express();
 
+require('dotenv').config();
 
-var portNum = process.env.PORT }} 8800;
+Mongoose.connect(process.env.DB_URL);
 
+var portNum = 8800;
 app.set('port', portNum);
-app.engine('handlebrs', hbs({defaultLayout:'main'}) );
+
+//tell express to use handlebars
+app.engine('handlebars', hbs({defaultLayout:'main'}) );
 app.set('view engine', 'handlebars');
 
-app.get('/:name', function(req, res){
-	res.render('home', {name: 'sharon'
-	});//whatever name you type into url after port num
-});
+var game = require('./routes/games');
+app.use('/games', game);
 
-.listen(portNum, function(){
-	consolelog('listening on port ', portNum);
+app.use( express.static('public') );
+
+app.listen(portNum, function(){
+	console.log('listening on port ', portNum);
 })
