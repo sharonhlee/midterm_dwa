@@ -1,50 +1,101 @@
-<form id="nytSearch" action="/games" method="get">
+<div id=mystages>
 
-    <label for="year">Year(1831 to current year): </label><br>
-    <input id="year" type="number" name="year" min="1831" max="2016" value=2016 /><br>
+    <div class="stage" id="pregameform">
 
-    <label for="searchterm">Search: </label><br>
-    <div id="searchterms">
-    <input type="text" name="searchterm1" placeholder="Enter Search term"/><br>
-    <input type="text" name="searchterm2" placeholder="Enter Search term"/><br>
-    <input type="text" name="searchterm3" placeholder="Enter Search term"/><br>
-    <input type="text" name="searchterm4" placeholder="Enter Search term"/><br>
-    <input type="text" name="searchterm5" placeholder="Enter Search term"/>
-    </div>
+        <form action="/games" method="get">
+            <label for "name">
+            <label for="year">Year(1831 to current year): </label><br>
+            <input id="year" type="number" name="year" min="1831" max="2016" value=2016 /><br>
 
-    <br>
-    <input id="apikey" type="hidden" name="32bc1bcdf69f07f2adcd6129af469c3b%3A13%3A71691949" />
+            <label for="searchterm">Search: </label><br>
+            <div id="searchterms">
+            <input type="text" class= "st" name="searchterm1" placeholder="Enter Search term"/><br>
+            <input type="text" class= "st" name="searchterm2" placeholder="Enter Search term"/><br>
+            <input type="text" class= "st" name="searchterm3" placeholder="Enter Search term"/><br>
+            <input type="text" class= "st" name="searchterm4" placeholder="Enter Search term"/><br>
+            <input type="text" class= "st" name="searchterm5" placeholder="Enter Search term"/>
+            </div>
 
-    <input type="hidden" name="mode" value="html">
-    <br>
-    <input type="submit" />
+            <br>
+            <input id="apikey" type="hidden" name="28e65b2092ce45208a669293b9e14601" />
+            <input type="hidden" name="mode" value="html">
+            <br>
+            <input type="submit" />
 
-</form>
+        </form>
+
+    </div> <!--end of pregame page-->
+
+
+    <div class="stage hide" id="gamestart">
+        <h1>AYYYYYY</h1>
+        <h3 id="answer"></h3>
+        <h3 id="scorekeeper"></h3>
+    </div> <!--end of main game page-->
+
+
+    <div class="stage hide" id="gameover">
+
+    </div> <!--end of gameover page-->
+
+</div>
+
 
 
 
 <script type="text/javascript">
 
+    //PAGE VIEW HANDLING
+
+    function showStage(stageName) {
+        $('.stage').hide();
+        $('#' + stageName).show();
+    };
+
+    //FORM SUBMIT HANDLING AND DATA STORING
     $('#searchterms').focus();
 
-    $('form').on('submit', handleSubmit);
+    $('form').on('submit', validateform);
 
-    function handleSubmit(event) {
+    function validateform(event) {
+
         //prevent form submission
         event.preventDefault();
+
+        var alerted = false;
+        var valid = false;
+        countfields = $("#searchterms input").length
+        $("#searchterms input").each(function() {
+            if ($(this).val() == "" && alerted == false) {
+                alert("Please fill in all fields!");
+                alerted = true;
+            } else if (!$(this).val() == "") {
+                countfields -= 1;
+                if (countfields == 0) {
+                    var stageName = "gamestart";
+                    showStage(stageName);
+                    handleSubmit(event);
+                }
+            }
+        })
+    };
+
+    //api request info organization
+    function handleSubmit(event) {
+
         var formData = {
             'q': $('#searchterms input').serializeArray(),
             'begin_date': $('#year').val() + "0101",
             'end_date': $('#year').val() + "1231",
             'api_key': $('#apikey').val()
         };
-        console.log(formData);
-        console.log(formData.q.length);
+        //console.log(formData);
+        //console.log(formData.q.length);
 
-        searchData=[]
-        for(i=0;i<formData.q.length;i++){
-            var eachSearchData={
-                'q':formData.q[i].value,
+        searchData = []
+        for (i = 0; i < formData.q.length; i++) {
+            var eachSearchData = {
+                'q': formData.q[i].value,
                 'begin_date': formData.begin_date,
                 'end_date': formData.end_date,
                 'api-key': formData.api_key
@@ -53,22 +104,136 @@
         };
         //console.log(searchData);
 
-        for (i=0;i<searchData.length;i++){
-            console.log(searchData[i]);
+        var searchArray = [];
+        var hitcountArray = [];
+
+        //getting hitcount for each inputted searchword, store searchword and corresponding hitcount in two separate arrays with the same index locator
+        function requestApi(info) {
+
             $.ajax({
                 url: 'http://api.nytimes.com/svc/search/v2/articlesearch.json',
                 method: 'GET',
-                data: searchData[i]
+                data: info,
+                searchkey: info.q
             }).done(function(data) {
-
-                var num;
-
                 num = data.response.meta.hits; //number of articles
-                console.log(num);
+                console.log(this.searchkey + ": " + num);
+                searchArray.push(this.searchkey);
+                hitcountArray.push(num);
+                if (searchArray.length && hitcountArray.length == $("#searchterms input").length) {
+                    console.log("we're all done.");
+                    var partofschema = {
+                        gameplay: [{ searchterm: String, hitcount: Number }]
+                    };
+                    for (i = 0; i < $("#searchterms input").length; i++) {
+                        partofschema.gameplay[i] = {};
+                        partofschema.gameplay[i].searchterm = searchArray[i];
+                        partofschema.gameplay[i].hitcount = hitcountArray[i];
+                    };
+                    startGame(partofschema);
+
+                };
+            }).fail(function() {
+                //console.log('ajax request failed: ' + this.searchkey);
+                setTimeout(function() {
+                    requestApi(info)
+                }, 1000); //staggering requests since I was running into status code 429, if request fails then try again 2 seconds later
+                return
             });
 
         };
 
+        for (i = 0; i < searchData.length; i++) {
+
+            requestApi(searchData[i]);
+        };
+
+
     };
+
+    // GAME / APP
+    var score = 0;
+    var newchoiceindex = 1;
+
+    function startGame(x) {
+    var data=x;
+    console.log(data);
+
+    var rounds = data.gameplay.length - 1;
+
+
+    var page = document.getElementById("gamestart")
+    var div1 = document.createElement("div");
+    div1.id = 'choice1display';
+    page.appendChild(div1);
+    var div2 = document.createElement("div");
+    div2.id = 'choice2display';
+    page.appendChild(div2);
+
+    var c1button = document.getElementById('choice1display');
+    var c2button = document.getElementById('choice2display');
+    
+    var choice1 = data.gameplay[0];
+    c1button.innerHTML=choice1.searchterm;
+
+    var choice2 = data.gameplay[1];
+    c2button.innerHTML=choice2.searchterm;
+
+    // c1button.addEventListener('click', checkAnswer(choice1, c1button, choice2,c2button,rounds, updateChoices));
+    c1button.addEventListener('click',function(){
+        if (choice1.hitcount > choice2.hitcount) {
+            score += 1;
+            newchoiceindex += 1;
+            document.getElementById("answer").innerHTML="CORRECT";
+            window.setTimeout(function(){document.getElementById("answer").innerHTML=""},3000);
+            //console.log("CORRECT!");
+            if (score == rounds) {
+                c2button.innerHTML = choice2.searchterm+": "+choice2.hitcount;
+                gameOverWinner();
+            }else{
+            c1button.innerHTML = "";
+            c1button.innerHTML = choice1.searchterm+": "+choice1.hitcount;
+            c2button.innerHTML = choice2.searchterm+": "+choice2.hitcount;
+            choice2=data.gameplay[newchoiceindex];
+            window.setTimeout(function(){c2button.innerHTML = ""},1000);
+            window.setTimeout(function(){c2button.innerHTML = choice2.searchterm},1000);
+            }
+        }else{
+            gameOverLoser();
+        };
+        });
+    c2button.addEventListener('click',function(){
+        if (choice2.hitcount > choice1.hitcount) {
+            score += 1;
+            newchoiceindex += 1;
+            document.getElementById("answer").innerHTML="CORRECT";
+            window.setTimeout(function(){document.getElementById("answer").innerHTML=""},3000);
+            //console.log("CORRECT!");
+            if (score == rounds) {
+                c1button.innerHTML = choice1.searchterm+": "+choice1.hitcount;
+                gameOverWinner();
+            }else{
+                c2button.innerHTML = "";
+                c2button.innerHTML = choice2.searchterm+": "+choice2.hitcount;
+                c1button.innerHTML = choice1.searchterm+": "+choice1.hitcount;
+                choice1=data.gameplay[newchoiceindex];
+                window.setTimeout(function(){c1button.innerHTML = ""},1000);
+                window.setTimeout(function(){c1button.innerHTML = choice1.searchterm},1000);
+            }
+        }else{
+            gameOverLoser();
+        };
+        });
+    };
+
+
+    function gameOverLoser() {
+        console.log("gameover");
+    };
+
+    function gameOverWinner() {
+        console.log("gamewon");
+    };
+
 </script>
 

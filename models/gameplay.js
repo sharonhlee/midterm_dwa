@@ -3,16 +3,8 @@ var Schema = mongoose.Schema;
 var URLSlugs=require('mongoose-url-slugs');
 
 var gameSchema = new Schema({
-    name: {type: String, required: true},
-    score: Number,
-    gameplay: [
-    	{
-    		items: [key: String, hitCount: Number],
-    		winnerIndex: {type: Number, min:0, max:1}
-    	}
-    ],
-    dateCreated: {type:date, default: Date.now},
-    save: Boolean
+    gameplay: [{ searchterm: String, hitcount: Number }],
+    dateCreated: {type: Date, default: Date.now}
 });
 
 gameSchema.plugin(URLSlugs('name', {field: 'slug'}));
