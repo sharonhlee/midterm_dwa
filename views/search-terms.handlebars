@@ -5,18 +5,24 @@
         <form action="/games" method="get">
             <label for "name">
             <label for="year">Year(1831 to current year): </label><br>
-            <input id="year" type="number" name="year" min="1831" max="2016" value=2016 /><br>
+            <input id="year" type="number" name="year" min="1831" max="2016" value=2016 /><br><br>
 
-            <label for="searchterm">Search: </label><br>
+            <label for="searchterm">Search: </label><br><br>
             <div id="searchterms">
             <input type="text" class= "st" name="searchterm1" placeholder="Enter Search term"/><br>
             <input type="text" class= "st" name="searchterm2" placeholder="Enter Search term"/><br>
             <input type="text" class= "st" name="searchterm3" placeholder="Enter Search term"/><br>
             <input type="text" class= "st" name="searchterm4" placeholder="Enter Search term"/><br>
-            <input type="text" class= "st" name="searchterm5" placeholder="Enter Search term"/>
-            </div>
+            <input type="text" class= "st" name="searchterm5" placeholder="Enter Search term"/><br>
+            <input type="text" class= "st" name="searchterm6" placeholder="Enter Search term"/><br>
+            <input type="text" class= "st" name="searchterm7" placeholder="Enter Search term"/><br>
+            <input type="text" class= "st" name="searchterm8" placeholder="Enter Search term"/><br>
+            <input type="text" class= "st" name="searchterm9" placeholder="Enter Search term"/><br>
+            <input type="text" class= "st" name="searchterm10" placeholder="Enter Search term"/>
 
-            <br>
+            </div>
+            <h3><a href="#" id="addmore">Add Another Input Box</a></h3>
+
             <input id="apikey" type="hidden" name="28e65b2092ce45208a669293b9e14601" />
             <input type="hidden" name="mode" value="html">
             <br>
@@ -28,14 +34,13 @@
 
 
     <div class="stage hide" id="gamestart">
-        <h1>AYYYYYY</h1>
         <h3 id="answer"></h3>
         <h3 id="scorekeeper"></h3>
     </div> <!--end of main game page-->
 
 
     <div class="stage hide" id="gameover">
-
+        <h1>GAME OVER</h1>
     </div> <!--end of gameover page-->
 
 </div>
@@ -51,6 +56,7 @@
         $('.stage').hide();
         $('#' + stageName).show();
     };
+
 
     //FORM SUBMIT HANDLING AND DATA STORING
     $('#searchterms').focus();
@@ -163,16 +169,40 @@
 
 
     var page = document.getElementById("gamestart")
+    page.style.display="block";
+    page.style.position="absolute";
+    page.style.top="0";
+    page.style.right="0";
+    page.style.bottom="0";
+    page.style.left="0";
     var div1 = document.createElement("div");
     div1.id = 'choice1display';
+    div1.style.height="50%";
+    div1.style.width="100%";
     page.appendChild(div1);
+    
+
     var div2 = document.createElement("div");
     div2.id = 'choice2display';
+    div2.style.height="50%";
+    div2.style.width="100%";
     page.appendChild(div2);
 
     var c1button = document.getElementById('choice1display');
     var c2button = document.getElementById('choice2display');
     
+    c1button.style.display="flex";
+    c2button.style.display="flex";
+    c1button.style.alignItems="center";
+    c2button.style.alignItems="center";
+    c1button.style.justifyContent="center";
+    c2button.style.justifyContent="center";
+    c1button.style.fontSize="50px";
+    c2button.style.fontSize="50px";
+    c1button.style.textTransform="uppercase";
+    c2button.style.textTransform="uppercase";
+    
+
     var choice1 = data.gameplay[0];
     c1button.innerHTML=choice1.searchterm;
 
@@ -199,6 +229,8 @@
             window.setTimeout(function(){c2button.innerHTML = choice2.searchterm},1000);
             }
         }else{
+            c1button.innerHTML = choice1.searchterm+": "+choice1.hitcount;
+            c2button.innerHTML = choice2.searchterm+": "+choice2.hitcount
             gameOverLoser();
         };
         });
@@ -221,6 +253,8 @@
                 window.setTimeout(function(){c1button.innerHTML = choice1.searchterm},1000);
             }
         }else{
+            c1button.innerHTML = choice1.searchterm+": "+choice1.hitcount;
+            c2button.innerHTML = choice2.searchterm+": "+choice2.hitcount
             gameOverLoser();
         };
         });

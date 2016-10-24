@@ -1,24 +1,9 @@
 
 *{
-	font-family: 'Quicksand', sans-serif;
-	color:black;
-	background-color:rgb(234,199,128);
-	font-size:40px;
-}
-
-span{
-	font-weight: bold;
-	font-size:36px;
-	color:white;
-}
-#str1{
-	font-size:28px;
-}
-
-#staticjson{
-	line-height:100%;
-	font-size:18px;
-	color:rgb(0,60,113);
+	font-family: 'Merriweather', serif;
+	color:rgb(48,92,135);
+	background-color:rgb(252,177,32);
+	font-size:30px;
 }
 
 body{
@@ -28,26 +13,27 @@ body{
 	padding:auto;
 }
 
-input:focus{
-	outline:none;
-	color:rgba(77,173,255,.8);
+label{
+	font-size:40px;
 }
-#q, #year{
-	color:rgba(77,173,255,.8);
+
+input:focus{
+	text-align:center;
+	outline:none;
+	color:rgba(48,92,135,.8);
 }
 
 input[type=submit]{
 	font-size:34px;
 	background-color:none;
-	border:3px solid rgba(77,173,255,.8);
-	color:rgba(77,173,255,.8);
+	border:3px solid rgba(48,92,135,.8);
+	color:rgba(48,92,135,.8);
 	border-radius:10px;
 	cursor: pointer;
 }
-
 input[type=submit]:hover{
-	background-color:rgba(77,173,255,.8);
-	color:rgb(234,199,128);
+	background-color:rgba(48,92,135,.8);
+	color:rgb(252,177,32);
 	transform:scale(.9);
 	-webkit-transition: all .5s ease;
   	-moz-transition: all .5s ease;
@@ -58,7 +44,40 @@ input[type=submit]:hover{
 input[type=text]{
 	border:none;
 }
+
 input[type=number]{
 	border:none;
+	text-align:center;
+}
+input{
+	text-align:center;
 }
 
+::-webkit-input-placeholder {
+   color: rgb(232,154,0);
+   text-align: center;
+}
+:-moz-placeholder { /* Firefox 18- */
+   color: rgb(232,154,0); 
+   text-align: center;
+}
+::-moz-placeholder {  /* Firefox 19+ */
+   color: rgb(232,154,0); 
+   text-align: center;
+}
+:-ms-input-placeholder {  
+   color: rgb(232,154,0);  
+   text-align: center;
+}
+
+div{
+	text-align:center;
+}
+
+#choice1display:hover{
+	background-color: rgb(78,189,80);
+}
+
+#choice2display:hover{
+	background-color: rgb(78,189,80);
+}

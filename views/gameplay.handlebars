@@ -1,25 +1,22 @@
 
+<sectionid="starterscreen">
+	<button type="button" id="startgame">Click Me!</button>
+<section>
 
+<section class="stage game" id="gameplay">
+	<h1>hello</h1>
+</section>
 
-<div id="startscreen" ">
-
-<button id="startbutton">start game</button>
-</div>
-
-<div>
-    <h1>hello</h1>
-</div>
-
-</body>
-</html>
+<section class="stage gameover"></section>
 
 
 
-<script>
-$("#startbutton").click(startGame);
+<script type="text/javascript">
 
-function startGame(){
-    $("#startscreen").remove();
+$('#startgame').click(enterGame);
+
+function enterGame(){
+	$("#starterscreen").remove();
 };
 
 </script>
