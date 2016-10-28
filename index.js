@@ -17,12 +17,12 @@ app.set('port', portNum);
 app.engine('handlebars', hbs({defaultLayout:'main'}) );
 app.set('view engine', 'handlebars');
 
+var main = require('./routes/main');
+app.use('/', main);
+
 var game = require('./routes/game');
 app.use('/game', game);
 
-//TESTING
-var test = require('./routes/testing');
-app.use('/testing', test);
 
 app.use( express.static('public') );
 

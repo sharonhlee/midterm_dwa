@@ -81,3 +81,39 @@ div{
 #choice2display:hover{
 	background-color: rgb(78,189,80);
 }
+
+a{
+	text-decoration: none;
+}
+
+a.button {
+
+    font-size:50px;
+    padding: 5px 15px 5px 15px;
+	background-color:none;
+	border:3px solid rgba(48,92,135,.8);
+	color:rgba(48,92,135,.8);
+	border-radius:15px;
+	cursor: pointer;
+}
+
+a.button:hover{
+	background-color:rgba(48,92,135,.8);
+	color:rgb(252,177,32);
+	transform:scale(.9);
+	-webkit-transition: all .5s ease;
+  	-moz-transition: all .5s ease;
+  	-o-transition: all .5s ease;
+  	-ms-transition: all .5s ease;
+  	transition: all .5s ease;
+}
+
+#instruction{
+	font-size:18px;
+}
+#starter_page{
+	align-content: center;
+	text-align: center;
+	margin:120px;
+	padding:auto;
+}
